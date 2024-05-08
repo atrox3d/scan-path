@@ -1,19 +1,7 @@
 from pathlib import Path
 import json
-import argparse
 
-def parse():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--dict', action='store_true', default=True)
-    parser.add_argument('-l', '--list', action='store_true', default=False)
-    parser.add_argument('-e', '--exclude', action='append', default=['.git'])
-    parser.add_argument('-p', '--path', default='.')
-    parser.add_argument('-j', '--jsonpath', default='maze-solver.json')
-    
-    args = parser.parse_args()
-    args.dict = not args.list
-    print(args)
-    return args
+import options
 
 def _addfile(path: Path, collection: dict | list):
     if isinstance(collection, dict):
@@ -62,6 +50,6 @@ def load_jsonpaths(jsonpath: str) -> list | dict:
     return collection
 
 if __name__ == '__main__':
-    args = parse()
+    args = options.parse()
     save_jsonpaths(args.jsonpath, args.path, *args.exclude, use_dict=args.dict)
     print(json.dumps(load_jsonpaths(args.jsonpath), indent=2))
