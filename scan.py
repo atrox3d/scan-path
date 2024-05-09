@@ -1,8 +1,6 @@
 from pathlib import Path
 import json
 
-import options
-
 def _addfile(path: Path, collection: dict | list):
     if isinstance(collection, dict):
         collection[path.name] = None
@@ -49,7 +47,3 @@ def load_jsonpaths(jsonpath: str) -> list | dict:
         collection = json.load(jfp)
     return collection
 
-if __name__ == '__main__':
-    args = options.parse()
-    save_jsonpaths(args.jsonpath, args.path, *args.exclude, use_dict=args.dict)
-    print(json.dumps(load_jsonpaths(args.jsonpath), indent=2))
