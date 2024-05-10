@@ -20,8 +20,7 @@ def _adddir(path: Path, collection: dict | list):
         return d[key]
 
 def scan(path:Path, *exclude: str, collection: dict|list=None, use_dict=True, level=0) -> dict|list:
-    if isinstance(path, str):
-        path = Path(path)
+    path = Path(path) if isinstance(path, str) else path
     if collection is None:
         collection = {} if use_dict else []
     if path.name in exclude:
