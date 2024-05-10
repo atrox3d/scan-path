@@ -19,7 +19,7 @@ def _adddir(path: Path, collection: dict | list):
         collection.append(d)
         return d[key]
 
-def path_to_collection(path:Path, l:list, *exclude: str, level=0) -> list:
+def scan(path:Path, collection: dict|list, *exclude: str, level=0) -> dict|list:
     if isinstance(path, str):
         path = Path(path)
     if path.name in exclude:
@@ -27,18 +27,18 @@ def path_to_collection(path:Path, l:list, *exclude: str, level=0) -> list:
     if not path.exists():
         raise FileNotFoundError(f'path {path.resolve().as_posix()} not found')
     if path.is_file():
-        _addfile(path, l)
+        _addfile(path, collection)
     if path.is_dir():
-        element = _adddir(path, l)
+        element = _adddir(path, collection)
         for p in path.glob('*'):
-            path_to_collection(p, element, *exclude, level=level+1)
+            scan(p, element, *exclude, level=level+1)
     if level == 0:
-        return l
+        return collection
 
 def save_jsonpaths(jsonpath: str, root:str|Path, *exclude: str, use_dict=True) -> None:
     collection = {} if use_dict else []
     print(f'{collection = }')
-    collection = path_to_collection(root, collection, *exclude)
+    collection = scan(root, collection, *exclude)
     with open(jsonpath, 'w') as jfp:
         json.dump(collection, jfp, indent=2)
 
