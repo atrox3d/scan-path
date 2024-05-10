@@ -21,8 +21,7 @@ def _adddir(path: Path, collection: dict | list):
 
 def scan(path:Path, *exclude: str, collection: dict|list=None, use_dict=True, level=0) -> dict|list:
     path = Path(path) if isinstance(path, str) else path
-    if collection is None:
-        collection = {} if use_dict else []
+    collection = ({} if use_dict else []) if collection is None else collection
     if path.name in exclude:
         return collection
     if not path.exists():
