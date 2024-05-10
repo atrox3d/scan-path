@@ -22,18 +22,20 @@ def _adddir(path: Path, collection: dict | list):
 def scan(path:Path, *exclude: str, collection: dict|list=None, use_dict=True, level=0) -> dict|list:
     path = Path(path) if isinstance(path, str) else path
     collection = ({} if use_dict else []) if collection is None else collection
-    if path.name in exclude:
-        return collection
-    if not path.exists():
-        raise FileNotFoundError(f'path {path.resolve().as_posix()} not found')
+    
+    if path.name in exclude: return collection
+    if not path.exists(): raise FileNotFoundError(f'path {path.resolve().as_posix()} not found')
+    
     if path.is_file():
         _addfile(path, collection)
-    if path.is_dir():
+    elif path.is_dir():
         element = _adddir(path, collection)
         for p in path.glob('*'):
             scan(p, *exclude, collection=element, level=level+1)
-    if level == 0:
-        return collection
+    else:
+        pass
+
+    if level == 0: return collection
 
 def save_jsonpaths(jsonpath: str, root:str|Path, *exclude: str, use_dict=True) -> None:
     collection = scan(root, *exclude, use_dict=use_dict)
