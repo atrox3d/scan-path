@@ -23,7 +23,7 @@ def scan(path:Path, collection: dict|list, *exclude: str, level=0) -> dict|list:
     if isinstance(path, str):
         path = Path(path)
     if path.name in exclude:
-        return
+        return collection
     if not path.exists():
         raise FileNotFoundError(f'path {path.resolve().as_posix()} not found')
     if path.is_file():
