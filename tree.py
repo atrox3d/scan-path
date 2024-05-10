@@ -19,9 +19,11 @@ def _adddir(path: Path, collection: dict | list):
         collection.append(d)
         return d[key]
 
-def scan(path:Path, collection: dict|list, *exclude: str, level=0) -> dict|list:
+def scan(path:Path, *exclude: str, collection: dict|list=None, use_dict=True, level=0) -> dict|list:
     if isinstance(path, str):
         path = Path(path)
+    if collection is None:
+        collection = {} if use_dict else []
     if path.name in exclude:
         return collection
     if not path.exists():
@@ -31,14 +33,12 @@ def scan(path:Path, collection: dict|list, *exclude: str, level=0) -> dict|list:
     if path.is_dir():
         element = _adddir(path, collection)
         for p in path.glob('*'):
-            scan(p, element, *exclude, level=level+1)
+            scan(p, *exclude, collection=element, level=level+1)
     if level == 0:
         return collection
 
 def save_jsonpaths(jsonpath: str, root:str|Path, *exclude: str, use_dict=True) -> None:
-    collection = {} if use_dict else []
-    print(f'{collection = }')
-    collection = scan(root, collection, *exclude)
+    collection = scan(root, *exclude, use_dict=use_dict)
     with open(jsonpath, 'w') as jfp:
         json.dump(collection, jfp, indent=2)
 
